@@ -25,6 +25,7 @@ public class BubbleLayout extends FrameLayout {
     private float mCornersRadius;
     private float mArrowHeight;
     private float mArrowPosition;
+    private float mArrowTipOffset;
     private int mBubbleColor;
     private float mStrokeWidth;
     private int mStrokeColor;
@@ -47,6 +48,8 @@ public class BubbleLayout extends FrameLayout {
                 convertDpToPixel(8, context));
         mCornersRadius = a.getDimension(R.styleable.BubbleLayout_bl_cornersRadius, 0);
         mArrowPosition = a.getDimension(R.styleable.BubbleLayout_bl_arrowPosition,
+                convertDpToPixel(0, context));
+        mArrowTipOffset = a.getDimension(R.styleable.BubbleLayout_bl_arrowTipOffset,
                 convertDpToPixel(0, context));
         mBubbleColor = a.getColor(R.styleable.BubbleLayout_bl_bubbleColor, Color.WHITE);
 
@@ -81,7 +84,7 @@ public class BubbleLayout extends FrameLayout {
 
         RectF rectF = new RectF(left, top, right, bottom);
         float arrowPosition = mArrowPosition;
-
+        float arrowTipOffset = mArrowTipOffset;
         ArrowDirection arrowDirection = mArrowDirection;
         /*let's do all RTL logic in the BubbleLayout and
          Bubble will know only LEFT,RIGHT,TOP,BOTTOM
@@ -127,6 +130,7 @@ public class BubbleLayout extends FrameLayout {
                     arrowPosition = center + validArrowPosition;
                 } else {
                     arrowPosition = center - validArrowPosition;
+                    arrowTipOffset *= -1;
                 }
                 break;
             }
@@ -144,6 +148,7 @@ public class BubbleLayout extends FrameLayout {
                 } else {
                     arrowPosition = (right - left) - mArrowPosition - mArrowWidth / 2;
                     arrowPosition = getValidArrowPosition((right - left),mArrowWidth,arrowPosition);
+                    arrowTipOffset *= -1;
                 }
                 break;
             }
@@ -155,12 +160,13 @@ public class BubbleLayout extends FrameLayout {
             }
             case TOP_END:
             case BOTTOM_END:{
-                if(!isLTR) {
-                    arrowPosition = left + mArrowPosition - mArrowWidth / 2;
-                    arrowPosition = getValidArrowPosition((right - left), mArrowWidth, arrowPosition);
-                } else {
+                if(isLTR) {
                     arrowPosition = (right - left) - mArrowPosition - mArrowWidth / 2;
                     arrowPosition = getValidArrowPosition((right - left),mArrowWidth,arrowPosition);
+                } else {
+                    arrowPosition = left + mArrowPosition - mArrowWidth / 2;
+                    arrowPosition = getValidArrowPosition((right - left), mArrowWidth, arrowPosition);
+                    arrowTipOffset *= -1;
                 }
                 break;
             }
@@ -172,15 +178,15 @@ public class BubbleLayout extends FrameLayout {
         case BOTTOM_RIGHT:
         arrowPosition = right - mArrowPosition - mArrowWidth / 2;*/
 
-        mBubble = new Bubble(rectF, mArrowWidth, mCornersRadius, mArrowHeight, arrowPosition,
+        mBubble = new Bubble(rectF, mArrowWidth, mCornersRadius, mArrowHeight, arrowPosition, arrowTipOffset,
                 mStrokeWidth, mStrokeColor, mBubbleColor, arrowDirection);
     }
 
     private float getValidArrowPosition(float range ,float realArrowWidth, float arrowPosition)  {
-        if(arrowPosition < realArrowWidth/2 )
-            return  realArrowWidth/2;
-        if(arrowPosition > range -  mCornersRadius/2 - realArrowWidth)
-            return range -  mCornersRadius/2 - realArrowWidth;
+        if(arrowPosition <  mCornersRadius/2 + mStrokeWidth )
+            return  mCornersRadius/2 + mStrokeWidth;
+        if(arrowPosition > range -  mCornersRadius/2 - realArrowWidth - mStrokeWidth)
+            return range -  mCornersRadius/2 - realArrowWidth - mStrokeWidth;
          return arrowPosition;
     }
 
@@ -322,6 +328,13 @@ public class BubbleLayout extends FrameLayout {
     public BubbleLayout setArrowPosition(float arrowPosition) {
         resetPadding();
         mArrowPosition = arrowPosition;
+        initPadding();
+        return this;
+    }
+
+    public BubbleLayout setArrowTipOffset(float arrowTipOffset) {
+        resetPadding();
+        mArrowTipOffset = arrowTipOffset;
         initPadding();
         return this;
     }

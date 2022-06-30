@@ -16,16 +16,24 @@
         <item name="android:padding">8dp</item>
         <item name="bl_arrowHeight">16dp</item>
         <item name="bl_arrowWidth">8dp</item>
-        <item name="bl_cornersRadius">10dp</item>
+        <item name="bl_cornersRadius">0dp</item>
         <item name="bl_strokeWidth">2dp</item>
         <item name="bl_arrowPosition">0dp</item>
+        <item name="bl_arrowTipOffset">-10dp</item>
+        <item name="bl_bubbleColor">#F88</item>
+
+    </style>
+
+    <style name="FastTestBlLayput.side" >
+        <item name="bl_arrowHeight">8dp</item>
+        <item name="bl_arrowWidth">16dp</item>
     </style>
 
     <style name="FastTestBlContent" >
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textColor">#000</item>
     </style>
 
 </resources>

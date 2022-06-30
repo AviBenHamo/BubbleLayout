@@ -5,6 +5,7 @@
         <attr name="bl_cornersRadius" format="dimension|reference" />
         <attr name="bl_arrowHeight" format="dimension|reference" />
         <attr name="bl_arrowPosition" format="dimension|reference" />
+        <attr name="bl_arrowTipOffset" format="dimension|reference" />
         <attr name="bl_bubbleColor" format="color|reference" />
         <attr name="bl_strokeWidth" format="dimension|reference" />
         <attr name="bl_strokeColor" format="color|reference" />

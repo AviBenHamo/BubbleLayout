@@ -25,9 +25,10 @@ class Bubble extends Drawable {
     private float mCornersRadius;
     private float mArrowHeight;
     private float mArrowPosition;
+    private float mArrowTipOffset;
     private float mStrokeWidth;
 
-    public Bubble(RectF rect, float arrowWidth, float cornersRadius, float arrowHeight, float arrowPosition, float strokeWidth, int strokeColor, int bubbleColor, ArrowDirection arrowDirection) {
+    public Bubble(RectF rect, float arrowWidth, float cornersRadius, float arrowHeight, float arrowPosition,float arrowTipOffset, float strokeWidth, int strokeColor, int bubbleColor, ArrowDirection arrowDirection) {
         this.mRect = rect;
 
         this.mArrowWidth = arrowWidth;
@@ -35,16 +36,20 @@ class Bubble extends Drawable {
         this.mArrowHeight = arrowHeight;
         this.mArrowPosition = arrowPosition;
         this.mStrokeWidth = strokeWidth;
-
+        this.mArrowTipOffset = arrowTipOffset;
         mPaint.setColor(bubbleColor);
 
         if (strokeWidth > 0) {
             mStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mStrokePaint.setColor(strokeColor);
+            mStrokePaint.setStrokeWidth(strokeWidth);
+            mStrokePaint.setStyle(Paint.Style.STROKE);
+            mStrokePaint.setAntiAlias(true);
             mStrokePath = new Path();
 
+//            initPath(arrowDirection, mPath, strokeWidth);
             initPath(arrowDirection, mPath, strokeWidth);
-            initPath(arrowDirection, mStrokePath, 0);
+            initPath(arrowDirection, mStrokePath, strokeWidth);
         } else {
             initPath(arrowDirection, mPath, 0);
         }
@@ -57,10 +62,10 @@ class Bubble extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        canvas.drawPath(mPath, mPaint);
         if (mStrokeWidth > 0) {
             canvas.drawPath(mStrokePath, mStrokePaint);
         }
-        canvas.drawPath(mPath, mPaint);
     }
 
     @Override
@@ -167,7 +172,7 @@ class Bubble extends Drawable {
 
         path.lineTo(rect.left + mArrowWidth + strokeWidth, mArrowHeight + mArrowPosition - (strokeWidth / 2));
 
-        path.lineTo(rect.left + strokeWidth + strokeWidth, mArrowPosition + mArrowHeight / 2);
+        path.lineTo(rect.left + strokeWidth + strokeWidth, mArrowPosition + mArrowHeight / 2 + mArrowTipOffset);
 
 
         path.lineTo(rect.left + mArrowWidth + strokeWidth, mArrowPosition + (strokeWidth / 2));
@@ -183,6 +188,7 @@ class Bubble extends Drawable {
     private void initLeftSquarePath(RectF rect, Path path, float strokeWidth) {
 
         path.moveTo(mArrowWidth + rect.left + strokeWidth, rect.top + strokeWidth);
+
         path.lineTo(rect.width() - strokeWidth, rect.top + strokeWidth);
 
         path.lineTo(rect.right - strokeWidth, rect.bottom - strokeWidth);
@@ -191,7 +197,7 @@ class Bubble extends Drawable {
 
 
         path.lineTo(rect.left + mArrowWidth + strokeWidth, mArrowHeight + mArrowPosition - (strokeWidth / 2));
-        path.lineTo(rect.left + strokeWidth + strokeWidth, mArrowPosition + mArrowHeight / 2);
+        path.lineTo(rect.left + strokeWidth + strokeWidth, mArrowPosition + mArrowHeight / 2 + mArrowTipOffset);
         path.lineTo(rect.left + mArrowWidth + strokeWidth, mArrowPosition + (strokeWidth / 2));
 
         path.lineTo(rect.left + mArrowWidth + strokeWidth, rect.top + strokeWidth);
@@ -204,7 +210,7 @@ class Bubble extends Drawable {
     private void initTopRoundedPath(RectF rect, Path path, float strokeWidth) {
         path.moveTo(rect.left + Math.min(mArrowPosition, mCornersRadius) + strokeWidth, rect.top + mArrowHeight + strokeWidth);
         path.lineTo(rect.left + mArrowPosition + (strokeWidth / 2), rect.top + mArrowHeight + strokeWidth);
-        path.lineTo(rect.left + mArrowWidth / 2 + mArrowPosition, rect.top + strokeWidth + strokeWidth);
+        path.lineTo(rect.left + mArrowWidth / 2 + mArrowPosition + mArrowTipOffset, rect.top + strokeWidth + strokeWidth);
         path.lineTo(rect.left + mArrowWidth + mArrowPosition - (strokeWidth / 2), rect.top + mArrowHeight + strokeWidth);
         path.lineTo(rect.right - mCornersRadius - strokeWidth, rect.top + mArrowHeight + strokeWidth);
 
@@ -231,7 +237,7 @@ class Bubble extends Drawable {
         path.moveTo(rect.left + mArrowPosition + strokeWidth, rect.top + mArrowHeight + strokeWidth);
 
         path.lineTo(rect.left + mArrowPosition + (strokeWidth / 2), rect.top + mArrowHeight + strokeWidth);
-        path.lineTo(rect.left + mArrowWidth / 2 + mArrowPosition, rect.top + strokeWidth + strokeWidth);
+        path.lineTo(rect.left + mArrowWidth / 2 + mArrowPosition + mArrowTipOffset, rect.top + strokeWidth + strokeWidth);
         path.lineTo(rect.left + mArrowWidth + mArrowPosition - (strokeWidth / 2), rect.top + mArrowHeight + strokeWidth);
         path.lineTo(rect.right - strokeWidth, rect.top + mArrowHeight + strokeWidth);
 
@@ -240,7 +246,7 @@ class Bubble extends Drawable {
         path.lineTo(rect.left + strokeWidth, rect.bottom - strokeWidth);
 
 
-        path.lineTo(rect.left + strokeWidth, rect.top + mArrowHeight + strokeWidth);
+        path.lineTo(rect.left + strokeWidth , rect.top + mArrowHeight + strokeWidth);
 
         path.lineTo(rect.left + mArrowPosition + strokeWidth, rect.top + mArrowHeight + strokeWidth);
 
@@ -257,8 +263,8 @@ class Bubble extends Drawable {
                 rect.top + strokeWidth, rect.right - mArrowWidth - strokeWidth, mCornersRadius + rect.top), 270, 90);
 
         path.lineTo(rect.right - mArrowWidth - strokeWidth, mArrowPosition + (strokeWidth / 2));
-        path.lineTo(rect.right - strokeWidth - strokeWidth, mArrowPosition + mArrowHeight / 2);
-        path.lineTo(rect.right - mArrowWidth - strokeWidth, mArrowPosition + mArrowHeight - (strokeWidth / 2));
+        path.lineTo(rect.right - strokeWidth - strokeWidth, mArrowPosition + mArrowHeight / 2 + mArrowTipOffset);
+        path.lineTo(rect.right - mArrowWidth - strokeWidth, mArrowPosition + mArrowHeight - (strokeWidth / 2) );
         path.lineTo(rect.right - mArrowWidth - strokeWidth, rect.bottom - mCornersRadius - strokeWidth);
 
         path.arcTo(new RectF(rect.right - mCornersRadius - mArrowWidth, rect.bottom - mCornersRadius,
@@ -279,7 +285,7 @@ class Bubble extends Drawable {
         path.lineTo(rect.width() - mArrowWidth - strokeWidth, rect.top + strokeWidth);
 
         path.lineTo(rect.right - mArrowWidth - strokeWidth, mArrowPosition + (strokeWidth / 2));
-        path.lineTo(rect.right - strokeWidth - strokeWidth, mArrowPosition + mArrowHeight / 2);
+        path.lineTo(rect.right - strokeWidth - strokeWidth, mArrowPosition + mArrowHeight / 2  + mArrowTipOffset);
         path.lineTo(rect.right - mArrowWidth - strokeWidth, mArrowPosition + mArrowHeight - (strokeWidth / 2));
 
         path.lineTo(rect.right - mArrowWidth - strokeWidth, rect.bottom - strokeWidth);
@@ -303,7 +309,7 @@ class Bubble extends Drawable {
                 rect.right - strokeWidth, rect.bottom - mArrowHeight - strokeWidth), 0, 90);
 
         path.lineTo(rect.left + mArrowWidth + mArrowPosition - (strokeWidth / 2), rect.bottom - mArrowHeight - strokeWidth);
-        path.lineTo(rect.left + mArrowPosition + mArrowWidth / 2, rect.bottom - strokeWidth - strokeWidth);
+        path.lineTo(rect.left + mArrowPosition + mArrowWidth / 2 + mArrowTipOffset, rect.bottom - strokeWidth - strokeWidth);
         path.lineTo(rect.left + mArrowPosition + (strokeWidth / 2), rect.bottom - mArrowHeight - strokeWidth);
         path.lineTo(rect.left + Math.min(mCornersRadius, mArrowPosition) + strokeWidth, rect.bottom - mArrowHeight - strokeWidth);
 
@@ -323,7 +329,7 @@ class Bubble extends Drawable {
 
 
         path.lineTo(rect.left + mArrowWidth + mArrowPosition - (strokeWidth / 2), rect.bottom - mArrowHeight - strokeWidth);
-        path.lineTo(rect.left + mArrowPosition + mArrowWidth / 2, rect.bottom - strokeWidth - strokeWidth);
+        path.lineTo(rect.left + mArrowPosition + mArrowWidth / 2 + mArrowTipOffset, rect.bottom - strokeWidth - strokeWidth);
         path.lineTo(rect.left + mArrowPosition + (strokeWidth / 2), rect.bottom - mArrowHeight - strokeWidth);
         path.lineTo(rect.left + mArrowPosition + strokeWidth, rect.bottom - mArrowHeight - strokeWidth);
 
