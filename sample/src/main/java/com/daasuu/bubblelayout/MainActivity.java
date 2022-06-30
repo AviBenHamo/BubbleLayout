@@ -21,9 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private PopupWindow popupWindow;
     private ArrowDirection[] randomArrowDirections = {
         TOP,
-        BOTTOM,
-        TOP_RIGHT,
-        BOTTOM_RIGHT
+        BOTTOM
     };
 
     @Override
@@ -46,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
                 int xoff = 0;
                 int yoff = 0;
                 ArrowDirection direction = randomArrowDirections[random.nextInt(randomArrowDirections.length)];
-                switch (direction) {
-                    case TOP_RIGHT:
-                    case BOTTOM_RIGHT:
-                        xoff = v.getWidth() - bubbleWidth;
-                        break;
-                    case TOP:
-                    case BOTTOM:
-                }
+//                switch (direction) {
+//                    case TOP_RIGHT:
+//                    case BOTTOM_RIGHT:
+//                        xoff = v.getWidth() - bubbleWidth;
+//                        break;
+//                    case TOP:
+//                    case BOTTOM:
+//                }
                 bubbleLayout.setArrowDirection(direction);
                 bubbleLayout.setArrowPosition(v.getWidth() / 2f);
                 popupWindow.showAsDropDown(v, xoff, yoff);

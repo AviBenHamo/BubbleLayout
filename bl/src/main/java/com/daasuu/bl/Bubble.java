@@ -1,5 +1,6 @@
 package com.daasuu.bl;
 
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -8,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 
 /**
  * Created by sudamasayuki on 16/03/27.
@@ -89,7 +91,6 @@ class Bubble extends Drawable {
     private void initPath(ArrowDirection arrowDirection, Path path, float strokeWidth) {
         switch (arrowDirection) {
             case LEFT:
-            case LEFT_CENTER:
                 if (mCornersRadius <= 0) {
                     initLeftSquarePath(mRect, path, strokeWidth);
                     break;
@@ -103,8 +104,6 @@ class Bubble extends Drawable {
                 initLeftRoundedPath(mRect, path, strokeWidth);
                 break;
             case TOP:
-            case TOP_CENTER:
-            case TOP_RIGHT:
                 if (mCornersRadius <= 0) {
                     initTopSquarePath(mRect, path, strokeWidth);
                     break;
@@ -119,7 +118,6 @@ class Bubble extends Drawable {
 
                 break;
             case RIGHT:
-            case RIGHT_CENTER:
                 if (mCornersRadius <= 0) {
                     initRightSquarePath(mRect, path, strokeWidth);
                     break;
@@ -134,8 +132,6 @@ class Bubble extends Drawable {
 
                 break;
             case BOTTOM:
-            case BOTTOM_CENTER:
-            case BOTTOM_RIGHT:
                 if (mCornersRadius <= 0) {
                     initBottomSquarePath(mRect, path, strokeWidth);
                     break;

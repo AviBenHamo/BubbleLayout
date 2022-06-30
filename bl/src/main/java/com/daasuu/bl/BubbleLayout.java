@@ -7,7 +7,11 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.core.view.ViewCompat;
 
 /**
  * Bubble View for Android with custom stroke width and color, arrow size, position and direction.
@@ -27,7 +31,7 @@ public class BubbleLayout extends FrameLayout {
     private int mBubbleColor;
     private float mStrokeWidth;
     private int mStrokeColor;
-
+    private boolean isLTR = true;
     public BubbleLayout(Context context) {
         this(context, null, 0);
     }
@@ -46,7 +50,7 @@ public class BubbleLayout extends FrameLayout {
                 convertDpToPixel(8, context));
         mCornersRadius = a.getDimension(R.styleable.BubbleLayout_bl_cornersRadius, 0);
         mArrowPosition = a.getDimension(R.styleable.BubbleLayout_bl_arrowPosition,
-                convertDpToPixel(12, context));
+                convertDpToPixel(0, context));
         mBubbleColor = a.getColor(R.styleable.BubbleLayout_bl_bubbleColor, Color.WHITE);
 
         mStrokeWidth =
@@ -55,6 +59,9 @@ public class BubbleLayout extends FrameLayout {
 
         int location = a.getInt(R.styleable.BubbleLayout_bl_arrowDirection, ArrowDirection.LEFT.getValue());
         mArrowDirection = ArrowDirection.fromInt(location);
+
+        isLTR = !getResources().getBoolean(R.bool.is_rtl);
+
 
         a.recycle();
         initPadding();
@@ -77,91 +84,141 @@ public class BubbleLayout extends FrameLayout {
 
         RectF rectF = new RectF(left, top, right, bottom);
         float arrowPosition = mArrowPosition;
+
+        ArrowDirection arrowDirection = mArrowDirection;
+        if(isLTR ){
+            if(mArrowDirection == ArrowDirection.START)
+                 arrowDirection = ArrowDirection.LEFT;
+            if(mArrowDirection == ArrowDirection.END)
+                arrowDirection = ArrowDirection.RIGHT;
+        } else {
+            if(mArrowDirection == ArrowDirection.START)
+                arrowDirection = ArrowDirection.RIGHT;
+            if(mArrowDirection == ArrowDirection.END)
+                arrowDirection = ArrowDirection.LEFT;
+        }
+
         switch (mArrowDirection) {
-            case LEFT_CENTER:
-            case RIGHT_CENTER:
-                arrowPosition = (bottom - top) / 2f - mArrowHeight / 2;
+            case LEFT:
+            case RIGHT:
+            case START:
+            case END: {
+                float center = (bottom - top) / 2f - mArrowHeight / 2;
+                float validArrowPosition = getValidArrowPosition(center, mArrowPosition);
+                arrowPosition = center + validArrowPosition;
                 break;
-            case TOP_CENTER:
-            case BOTTOM_CENTER:
-                arrowPosition = (right - left) / 2f - mArrowWidth / 2;
+            }
+            case TOP:
+            case BOTTOM:{
+                float center = (right - left) / 2f - mArrowWidth;
+                float validArrowPosition = getValidArrowPosition(center, mArrowPosition);
+
+                if(isLTR) {
+                    arrowPosition = center + validArrowPosition;
+                } else {
+                    arrowPosition = center - validArrowPosition;
+                }
                 break;
-            case TOP_RIGHT:
-            case BOTTOM_RIGHT:
-                arrowPosition = right - mArrowPosition - mArrowWidth / 2;
+            }
             default:
                 break;
         }
         mBubble = new Bubble(rectF, mArrowWidth, mCornersRadius, mArrowHeight, arrowPosition,
-                mStrokeWidth, mStrokeColor, mBubbleColor, mArrowDirection);
+                mStrokeWidth, mStrokeColor, mBubbleColor, arrowDirection);
+    }
+    private float getValidArrowPosition(float center , float arrowPosition)  {
+        float min = Math.min(center,Math.abs(arrowPosition));
+        min -= mCornersRadius/2;
+        if(arrowPosition < 0)
+            min = min * -1;
+        return min;
     }
 
     private void initPadding() {
-        int paddingLeft = getPaddingLeft();
-        int paddingRight = getPaddingRight();
-        int paddingTop = getPaddingTop();
-        int paddingBottom = getPaddingBottom();
-        switch (mArrowDirection) {
-            case LEFT:
-            case LEFT_CENTER:
-                paddingLeft += mArrowWidth;
-                break;
-            case RIGHT:
-            case RIGHT_CENTER:
-                paddingRight += mArrowWidth;
-                break;
-            case TOP:
-            case TOP_CENTER:
-            case TOP_RIGHT:
-                paddingTop += mArrowHeight;
-                break;
-            case BOTTOM:
-            case BOTTOM_CENTER:
-            case BOTTOM_RIGHT:
-                paddingBottom += mArrowHeight;
-                break;
-        }
-        if (mStrokeWidth > 0) {
-            paddingLeft += mStrokeWidth;
-            paddingRight += mStrokeWidth;
-            paddingTop += mStrokeWidth;
-            paddingBottom += mStrokeWidth;
-        }
-        setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+        updatePadding(true);
     }
 
     private void resetPadding() {
+        updatePadding(false);
+    }
+
+    /**
+     * Consolidate the logic of resetPadding and the initPadding to one plase
+     * @param add true to Add false to remove the Padding
+     */
+    private void updatePadding(Boolean add) {
+        int addOrRemove = add ? 1 : -1;
         int paddingLeft = getPaddingLeft();
+        int paddingStart = getPaddingStart();
         int paddingRight = getPaddingRight();
+        int paddingEnd = getPaddingEnd();
         int paddingTop = getPaddingTop();
         int paddingBottom = getPaddingBottom();
+
+        String lds = isLTR ? "LTR" : "RTL";
+        Log.d("Avi before",
+                "lds:" + lds
+                        + ", mArrowDirection:" + mArrowDirection.name()
+                        +  ", paddingLeft :" + paddingLeft
+                        + ", paddingStart:" + paddingStart
+                        + ", paddingRight:" + paddingRight
+                        + ", paddingEnd:" + paddingEnd
+                        + ", paddingTop:" + paddingTop
+                        + ", paddingBottom:" + paddingBottom
+
+        );
+
         switch (mArrowDirection) {
             case LEFT:
-            case LEFT_CENTER:
-                paddingLeft -= mArrowWidth;
+                paddingLeft += (mArrowWidth * addOrRemove);
+                if(isLTR)
+                    paddingStart += (mArrowWidth * addOrRemove);
+                else
+                    paddingEnd += (mArrowWidth * addOrRemove);
+                break;
+            case START:
+                paddingLeft += (mArrowWidth * addOrRemove);
+                paddingStart += (mArrowWidth * addOrRemove);
                 break;
             case RIGHT:
-            case RIGHT_CENTER:
-                paddingRight -= mArrowWidth;
+                paddingRight += (mArrowWidth * addOrRemove);
+                if(isLTR)
+                    paddingEnd += (mArrowWidth * addOrRemove);
+                else
+                    paddingStart += (mArrowWidth * addOrRemove);
+                break;
+            case END:
+                paddingRight += (mArrowWidth * addOrRemove);
+                paddingEnd += (mArrowWidth * addOrRemove);
                 break;
             case TOP:
-            case TOP_CENTER:
-            case TOP_RIGHT:
-                paddingTop -= mArrowHeight;
+                paddingTop += (mArrowHeight * addOrRemove);
                 break;
             case BOTTOM:
-            case BOTTOM_CENTER:
-            case BOTTOM_RIGHT:
-                paddingBottom -= mArrowHeight;
+                paddingBottom += (mArrowHeight * addOrRemove);
                 break;
         }
         if (mStrokeWidth > 0) {
-            paddingLeft -= mStrokeWidth;
-            paddingRight -= mStrokeWidth;
-            paddingTop -= mStrokeWidth;
-            paddingBottom -= mStrokeWidth;
+            paddingLeft += (mStrokeWidth * addOrRemove);
+            paddingStart += (mStrokeWidth * addOrRemove);
+            paddingRight += (mStrokeWidth * addOrRemove);
+            paddingEnd += (mStrokeWidth * addOrRemove);
+            paddingTop += (mStrokeWidth * addOrRemove);
+            paddingBottom += (mStrokeWidth * addOrRemove);
         }
+         Log.d("Avi after",
+                 "lds:" + lds
+                         + ", mArrowDirection:" + mArrowDirection.name()
+                        +  ", paddingLeft :" + paddingLeft
+                        + ", paddingStart:" + paddingStart
+                        + ", paddingRight:" + paddingRight
+                        + ", paddingEnd:" + paddingEnd
+                        + ", paddingTop:" + paddingTop
+                        + ", paddingBottom:" + paddingBottom
+
+        );
         setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+        setPaddingRelative(paddingStart, paddingTop, paddingEnd, paddingBottom);
     }
 
     static float convertDpToPixel(float dp, Context context) {
