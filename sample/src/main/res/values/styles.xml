@@ -18,7 +18,7 @@
         <item name="bl_arrowWidth">8dp</item>
         <item name="bl_cornersRadius">10dp</item>
         <item name="bl_strokeWidth">2dp</item>
-        <item name="bl_arrowPosition">120dp</item>
+        <item name="bl_arrowPosition">0dp</item>
     </style>
 
     <style name="FastTestBlContent" >

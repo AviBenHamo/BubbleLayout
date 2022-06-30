@@ -16,6 +16,16 @@
             <enum name="end" value="3"/>
             <enum name="top" value="4" />
             <enum name="bottom" value="5" />
+            <enum name="top_left" value="6" />
+            <enum name="bottom_left" value="7" />
+            <enum name="top_start" value="8" />
+            <enum name="bottom_start" value="9" />
+            <enum name="top_right" value="10" />
+            <enum name="bottom_right" value="11" />
+            <enum name="top_end" value="12" />
+            <enum name="bottom_end" value="13" />
         </attr>
+
+
     </declare-styleable>
 </resources>

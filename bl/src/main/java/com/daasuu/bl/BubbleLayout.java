@@ -8,10 +8,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.widget.FrameLayout;
-
-import androidx.core.view.ViewCompat;
 
 /**
  * Bubble View for Android with custom stroke width and color, arrow size, position and direction.
@@ -86,17 +83,31 @@ public class BubbleLayout extends FrameLayout {
         float arrowPosition = mArrowPosition;
 
         ArrowDirection arrowDirection = mArrowDirection;
-        if(isLTR ){
-            if(mArrowDirection == ArrowDirection.START)
-                 arrowDirection = ArrowDirection.LEFT;
-            if(mArrowDirection == ArrowDirection.END)
+        /*let's do all RTL logic in the BubbleLayout and
+         Bubble will know only LEFT,RIGHT,TOP,BOTTOM
+         and will have easy life*/
+        if(mArrowDirection == ArrowDirection.START) {
+            if(isLTR)
+                arrowDirection = ArrowDirection.LEFT;
+            else
                 arrowDirection = ArrowDirection.RIGHT;
-        } else {
-            if(mArrowDirection == ArrowDirection.START)
+        }
+        if(mArrowDirection == ArrowDirection.END) {
+            if(isLTR)
                 arrowDirection = ArrowDirection.RIGHT;
-            if(mArrowDirection == ArrowDirection.END)
+            else
                 arrowDirection = ArrowDirection.LEFT;
         }
+        else if(mArrowDirection == ArrowDirection.TOP_LEFT ||
+                mArrowDirection == ArrowDirection.TOP_START ||
+                mArrowDirection == ArrowDirection.TOP_RIGHT ||
+                mArrowDirection == ArrowDirection.TOP_END)
+            arrowDirection = ArrowDirection.TOP;
+        else if(mArrowDirection == ArrowDirection.BOTTOM_LEFT ||
+                mArrowDirection == ArrowDirection.BOTTOM_START ||
+                mArrowDirection == ArrowDirection.BOTTOM_RIGHT ||
+                mArrowDirection == ArrowDirection.BOTTOM_END)
+            arrowDirection = ArrowDirection.BOTTOM;
 
         switch (mArrowDirection) {
             case LEFT:
@@ -104,15 +115,14 @@ public class BubbleLayout extends FrameLayout {
             case START:
             case END: {
                 float center = (bottom - top) / 2f - mArrowHeight / 2;
-                float validArrowPosition = getValidArrowPosition(center, mArrowPosition);
+                float validArrowPosition = getValidArrowPositionCenter(center, mArrowPosition);
                 arrowPosition = center + validArrowPosition;
                 break;
             }
             case TOP:
             case BOTTOM:{
-                float center = (right - left) / 2f - mArrowWidth;
-                float validArrowPosition = getValidArrowPosition(center, mArrowPosition);
-
+                float center = (right - left) / 2f - mArrowWidth/2;
+                float validArrowPosition = getValidArrowPositionCenter(center, mArrowPosition);
                 if(isLTR) {
                     arrowPosition = center + validArrowPosition;
                 } else {
@@ -120,15 +130,63 @@ public class BubbleLayout extends FrameLayout {
                 }
                 break;
             }
+            case TOP_LEFT:
+            case BOTTOM_LEFT:{
+                arrowPosition = left + mArrowPosition - mArrowWidth / 2;
+                arrowPosition = getValidArrowPosition((right - left),mArrowWidth,arrowPosition);
+                break;
+            }
+            case TOP_START:
+            case BOTTOM_START:{
+                if(isLTR) {
+                    arrowPosition = left + mArrowPosition - mArrowWidth / 2;
+                    arrowPosition = getValidArrowPosition((right - left), mArrowWidth, arrowPosition);
+                } else {
+                    arrowPosition = (right - left) - mArrowPosition - mArrowWidth / 2;
+                    arrowPosition = getValidArrowPosition((right - left),mArrowWidth,arrowPosition);
+                }
+                break;
+            }
+            case TOP_RIGHT:
+            case BOTTOM_RIGHT:{
+                arrowPosition = (right - left) - mArrowPosition - mArrowWidth / 2;
+                arrowPosition = getValidArrowPosition((right - left),mArrowWidth,arrowPosition);
+                break;
+            }
+            case TOP_END:
+            case BOTTOM_END:{
+                if(!isLTR) {
+                    arrowPosition = left + mArrowPosition - mArrowWidth / 2;
+                    arrowPosition = getValidArrowPosition((right - left), mArrowWidth, arrowPosition);
+                } else {
+                    arrowPosition = (right - left) - mArrowPosition - mArrowWidth / 2;
+                    arrowPosition = getValidArrowPosition((right - left),mArrowWidth,arrowPosition);
+                }
+                break;
+            }
             default:
                 break;
         }
+/*
+        case TOP_RIGHT:
+        case BOTTOM_RIGHT:
+        arrowPosition = right - mArrowPosition - mArrowWidth / 2;*/
+
         mBubble = new Bubble(rectF, mArrowWidth, mCornersRadius, mArrowHeight, arrowPosition,
                 mStrokeWidth, mStrokeColor, mBubbleColor, arrowDirection);
     }
-    private float getValidArrowPosition(float center , float arrowPosition)  {
-        float min = Math.min(center,Math.abs(arrowPosition));
-        min -= mCornersRadius/2;
+
+    private float getValidArrowPosition(float range ,float realArrowWidth, float arrowPosition)  {
+        if(arrowPosition < realArrowWidth/2 )
+            return  realArrowWidth/2;
+        if(arrowPosition > range -  mCornersRadius/2 - realArrowWidth)
+            return range -  mCornersRadius/2 - realArrowWidth;
+         return arrowPosition;
+    }
+
+    private float getValidArrowPositionCenter(float center , float arrowPosition)  {
+        if(arrowPosition == 0) return  0;
+        float min = Math.min(center -  mCornersRadius/2 ,Math.abs(arrowPosition));
         if(arrowPosition < 0)
             min = min * -1;
         return min;
@@ -192,9 +250,17 @@ public class BubbleLayout extends FrameLayout {
                 paddingEnd += (mArrowWidth * addOrRemove);
                 break;
             case TOP:
+            case TOP_LEFT:
+            case TOP_START:
+            case TOP_RIGHT:
+            case TOP_END:
                 paddingTop += (mArrowHeight * addOrRemove);
                 break;
             case BOTTOM:
+            case BOTTOM_LEFT:
+            case BOTTOM_START:
+            case BOTTOM_RIGHT:
+            case BOTTOM_END:
                 paddingBottom += (mArrowHeight * addOrRemove);
                 break;
         }
