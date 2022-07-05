@@ -62,7 +62,7 @@ public class BubbleLayout extends FrameLayout {
         int location = a.getInt(R.styleable.BubbleLayout_bl_arrowDirection, ArrowDirection.LEFT.getValue());
         mArrowDirection = ArrowDirection.fromInt(location);
 
-        boolean supportsRtl = a.getBoolean(R.styleable.BubbleLayout_bl_supportsRtl, true);
+        boolean supportsRtl = a.getBoolean(R.styleable.BubbleLayout_bl_supportsRtl, false);
 
         isLTR = !(supportsRtl && getResources().getBoolean(R.bool.is_rtl));
 
