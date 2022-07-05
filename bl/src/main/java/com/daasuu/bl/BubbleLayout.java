@@ -10,6 +10,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import androidx.core.view.ViewCompat;
+
 /**
  * Bubble View for Android with custom stroke width and color, arrow size, position and direction.
  * Created by sudamasayuki on 16/04/04.
@@ -60,8 +62,9 @@ public class BubbleLayout extends FrameLayout {
         int location = a.getInt(R.styleable.BubbleLayout_bl_arrowDirection, ArrowDirection.LEFT.getValue());
         mArrowDirection = ArrowDirection.fromInt(location);
 
-        isLTR = !getResources().getBoolean(R.bool.is_rtl);
+        boolean supportsRtl = a.getBoolean(R.styleable.BubbleLayout_bl_supportsRtl, true);
 
+        isLTR = !(supportsRtl && getResources().getBoolean(R.bool.is_rtl));
 
         a.recycle();
         initPadding();

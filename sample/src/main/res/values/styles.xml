@@ -21,6 +21,7 @@
         <item name="bl_arrowPosition">0dp</item>
         <item name="bl_arrowTipOffset">-10dp</item>
         <item name="bl_bubbleColor">#F88</item>
+        <item name="bl_supportsRtl">false</item>
 
     </style>
 

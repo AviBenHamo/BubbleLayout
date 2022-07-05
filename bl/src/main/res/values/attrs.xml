@@ -9,6 +9,7 @@
         <attr name="bl_bubbleColor" format="color|reference" />
         <attr name="bl_strokeWidth" format="dimension|reference" />
         <attr name="bl_strokeColor" format="color|reference" />
+        <attr name="bl_supportsRtl" format="boolean|reference" />
 
         <attr name="bl_arrowDirection" format="enum">
             <enum name="left" value="0" />

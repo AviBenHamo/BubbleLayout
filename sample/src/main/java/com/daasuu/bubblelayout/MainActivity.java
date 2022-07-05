@@ -52,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
 //                    case TOP:
 //                    case BOTTOM:
 //                }
-                bubbleLayout.setArrowDirection(direction);
-                bubbleLayout.setArrowPosition(v.getWidth() / 2f);
-                popupWindow.showAsDropDown(v, xoff, yoff);
-            }
-        });
+//                bubbleLayout.setArrowDirection(direction);
+//                bubbleLayout.setArrowPosition(v.getWidth() / 2f);
+//                popupWindow.showAsDropDown(v, xoff, yoff);
+//            }
+//        });
 
     }
 
