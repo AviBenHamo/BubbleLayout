@@ -44,19 +44,13 @@ public class BubbleLayout extends FrameLayout {
         super(context, attrs, defStyleAttr);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.BubbleLayout);
-        mArrowWidth = a.getDimension(R.styleable.BubbleLayout_bl_arrowWidth,
-                convertDpToPixel(8, context));
-        mArrowHeight = a.getDimension(R.styleable.BubbleLayout_bl_arrowHeight,
-                convertDpToPixel(8, context));
+        mArrowWidth = a.getDimension(R.styleable.BubbleLayout_bl_arrowWidth, convertDpToPixel(8, context));
+        mArrowHeight = a.getDimension(R.styleable.BubbleLayout_bl_arrowHeight, convertDpToPixel(8, context));
         mCornersRadius = a.getDimension(R.styleable.BubbleLayout_bl_cornersRadius, 0);
-        mArrowPosition = a.getDimension(R.styleable.BubbleLayout_bl_arrowPosition,
-                convertDpToPixel(0, context));
-        mArrowTipOffset = a.getDimension(R.styleable.BubbleLayout_bl_arrowTipOffset,
-                convertDpToPixel(0, context));
+        mArrowPosition = a.getDimension(R.styleable.BubbleLayout_bl_arrowPosition, convertDpToPixel(0, context));
+        mArrowTipOffset = a.getDimension(R.styleable.BubbleLayout_bl_arrowTipOffset, convertDpToPixel(0, context));
         mBubbleColor = a.getColor(R.styleable.BubbleLayout_bl_bubbleColor, Color.WHITE);
-
-        mStrokeWidth =
-                a.getDimension(R.styleable.BubbleLayout_bl_strokeWidth, DEFAULT_STROKE_WIDTH);
+        mStrokeWidth = a.getDimension(R.styleable.BubbleLayout_bl_strokeWidth, DEFAULT_STROKE_WIDTH);
         mStrokeColor = a.getColor(R.styleable.BubbleLayout_bl_strokeColor, Color.GRAY);
 
         int location = a.getInt(R.styleable.BubbleLayout_bl_arrowDirection, ArrowDirection.LEFT.getValue());
@@ -308,6 +302,10 @@ public class BubbleLayout extends FrameLayout {
         return this;
     }
 
+    public void setBl_arrowWidth(float arrowWidth) {
+        setArrowWidth(arrowWidth);
+    }
+
     public BubbleLayout setArrowWidth(float arrowWidth) {
         resetPadding();
         mArrowWidth = arrowWidth;
@@ -321,6 +319,10 @@ public class BubbleLayout extends FrameLayout {
         return this;
     }
 
+    public void setBl_arrowHeight(float arrowHeight){
+        setArrowHeight(arrowHeight);
+    }
+
     public BubbleLayout setArrowHeight(float arrowHeight) {
         resetPadding();
         mArrowHeight = arrowHeight;
@@ -328,6 +330,9 @@ public class BubbleLayout extends FrameLayout {
         return this;
     }
 
+    public void setBl_arrowPosition(float arrowPosition) {
+        setArrowPosition(arrowPosition);
+    }
     public BubbleLayout setArrowPosition(float arrowPosition) {
         resetPadding();
         mArrowPosition = arrowPosition;
@@ -335,6 +340,9 @@ public class BubbleLayout extends FrameLayout {
         return this;
     }
 
+    public void setBl_arrowTipOffset(float arrowTipOffset) {
+        setArrowTipOffset(arrowTipOffset);
+    }
     public BubbleLayout setArrowTipOffset(float arrowTipOffset) {
         resetPadding();
         mArrowTipOffset = arrowTipOffset;

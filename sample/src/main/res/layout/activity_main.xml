@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.daasuu.bubblelayout.R" />
+
+        <variable
+            name="activity"
+            type="com.daasuu.bubblelayout.MainActivity" />
+    </data>
+
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    tools:context="com.daasuu.bubblelayout.MainActivity">
+    >
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -64,6 +73,7 @@
     <com.daasuu.bl.BubbleLayout
         app:bl_arrowDirection="top"
         style="@style/FastTestBlLayput"
+        app:bl_arrowHeight="@{ context.resources.getDimension(activity.isMan ? R.dimen.la_bl_arrowHeight : R.dimen.la_bl_arrowHeight2)}"
         >
 
         <TextView
@@ -176,3 +186,4 @@
 
 </LinearLayout>
 </ScrollView>
+</layout>

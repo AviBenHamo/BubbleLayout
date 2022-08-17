@@ -3,6 +3,9 @@ package com.daasuu.bubblelayout;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import android.widget.*;
 import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
 import com.daasuu.bl.BubblePopupHelper;
+import com.daasuu.bubblelayout.databinding.ActivityMainBinding;
 
 import java.util.Random;
 
@@ -19,6 +23,9 @@ import static com.daasuu.bl.ArrowDirection.*;
 public class MainActivity extends AppCompatActivity {
 
     private PopupWindow popupWindow;
+    private ActivityMainBinding binding;
+    public MutableLiveData<Boolean> isMan = new MutableLiveData<Boolean>(false);
+
     private ArrowDirection[] randomArrowDirections = {
         TOP,
         BOTTOM
@@ -27,8 +34,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setActivity(this);
         Button button = (Button) findViewById(R.id.btn_popup);
 
         final BubbleLayout bubbleLayout = (BubbleLayout) LayoutInflater.from(this).inflate(R.layout.layout_sample_popup, null);
@@ -55,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
 //                bubbleLayout.setArrowDirection(direction);
 //                bubbleLayout.setArrowPosition(v.getWidth() / 2f);
 //                popupWindow.showAsDropDown(v, xoff, yoff);
-//            }
-//        });
+            }
+        });
 
     }
 

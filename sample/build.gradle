@@ -7,7 +7,9 @@ repositories {
 
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
+//    compileSdkVersion COMPILE_SDK_VERSION as int
+    compileSdkVersion 29
+    dataBinding.enabled true
 
     defaultConfig {
         applicationId "com.daasuu.bubblelayout"
